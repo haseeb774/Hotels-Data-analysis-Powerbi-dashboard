@@ -8,9 +8,9 @@
 ![Status](https://img.shields.io/badge/Status-Complete-28a745?style=for-the-badge)
 
 **Interactive Power BI dashboard tracking ₹1.69 Billion in hotel revenue across 4 Indian cities**  
-*RevPAR · ADR · Occupancy · Booking Platform Mix · City-Level Performance*
+*RevPAR · ADR · Occupancy · Booking Platform Mix · City & Room-Level Drill-Down*
 
-[📊 View Dashboard](#dashboard) · [📐 Data Model](#data-model) · [🔍 Key Findings](#key-findings) · [💡 Business Insights](#business-insights) · [⚙️ Setup](#setup)
+[📊 View Dashboard](#-dashboard) · [📐 Data Model](#-data-model) · [🔍 Key Findings](#-key-findings) · [💡 Business Insights](#-business-insights) · [⚙️ Setup](#️-setup)
 
 </div>
 
@@ -18,31 +18,42 @@
 
 ## 📌 Project Overview
 
-AtliQ Hotels operates a chain of **luxury and business properties** across Delhi, Mumbai, Hyderabad, and Bangalore. This Power BI dashboard was built to give revenue managers a single view of performance across all properties, room types, booking platforms, and time periods — enabling faster, data-driven decisions.
+AtliQ Hotels operates a chain of **luxury and business properties** across Delhi, Mumbai, Hyderabad, and Bangalore. This Power BI dashboard was built to give revenue managers a **single pane of glass** across all properties, room types, booking platforms, and time periods — enabling faster, data-driven decisions.
 
 **The core business problem:** Leadership had no centralized way to compare property performance, identify occupancy gaps, or understand which booking channels were most profitable.
 
-**The solution:** A fully interactive, filter-driven dashboard with industry-standard hospitality KPIs built on a clean star schema data model.
+**The solution:** A fully interactive, filter-driven dashboard built on a clean **star schema data model** using industry-standard hospitality KPIs — the same metrics used by real hotel revenue management teams globally.
 
 ---
 
 ## 📊 Dashboard
 
+### Full Portfolio View — All Cities, All Rooms, May–Jul
+
 ![AtliQ Hotels Dashboard](Hotels_Dashboard.png)
 
-> **Filters available**: City · Room Type · Month (May–Jul) · Week Number  
-> All KPIs update dynamically based on filter selection.
+> **₹1.69B revenue · 14,594 bookings · 57.87% occupancy · 24.84% cancellation rate**
+
+---
+
+### Filtered View — Mumbai · Premium Rooms · July 2026
+
+![Filtered Dashboard](filter.png)
+
+> **Filter applied**: City = Mumbai · Room Type = Premium · Month = Jul 26  
+> Revenue drops to ₹56.73M | ADR jumps to ₹18,073 | RevPAR = 243.93 | Luxury ₹38M vs Business ₹19M  
+> This demonstrates how the dashboard dynamically isolates any segment for deep-dive analysis.
 
 ---
 
 ## 📐 Data Model
 
-The dashboard is built on a **star schema** — the industry standard for BI reporting:
+Built on a **star schema** — the industry standard for BI performance and scalability:
 
 ```
                     ┌─────────────┐
                     │  dim_date   │
-                    │  (calendar) │
+                    │ (calendar)  │
                     └──────┬──────┘
                            │
 ┌─────────────┐    ┌───────┴────────┐    ┌─────────────┐
@@ -50,116 +61,138 @@ The dashboard is built on a **star schema** — the industry standard for BI rep
 │ (properties)│    │  (main fact)   │    │ (room types)│
 └─────────────┘    └───────┬────────┘    └─────────────┘
                            │
-               ┌───────────┴───────────┐
-               │ fact_aggregated_      │
-               │ bookings              │
-               └───────────────────────┘
+               ┌───────────┴────────────┐
+               │ fact_aggregated_       │
+               │ bookings               │
+               └────────────────────────┘
 ```
 
 | Table | Type | Description |
 |---|---|---|
-| `dim_hotels` | Dimension | Property ID, name, city, category |
-| `dim_rooms` | Dimension | Room class (Standard / Elite / Premium / Presidential) |
-| `dim_date` | Dimension | Calendar table with week number, month |
+| `dim_hotels` | Dimension | Property ID, name, city, category (Luxury/Business) |
+| `dim_rooms` | Dimension | Room class — Standard, Elite, Premium, Presidential |
+| `dim_date` | Dimension | Calendar table — week number, month, day type |
 | `fact_bookings` | Fact | Individual booking records with revenue, ratings, platform |
-| `fact_aggregated_bookings` | Fact | Pre-aggregated bookings for performance metrics |
+| `fact_aggregated_bookings` | Fact | Pre-aggregated metrics for occupancy calculations |
 
 ---
 
-## 📈 Key Metrics (May–Jul Snapshot)
+## 📈 KPI Reference — What Each Metric Means
 
-| KPI | Value | What It Means |
-|---|---|---|
-| **Total Revenue** | ₹1.69 Billion | Across all properties and room types |
-| **RevPAR** | ₹7,256 | Revenue Per Available Room — core profitability KPI |
-| **ADR** | ₹12,696 | Average Daily Rate — pricing efficiency |
-| **Occupancy %** | 57.87% | Rooms filled vs. total available |
-| **DSRN** | 2,556 | Daily Sellable Room Nights available |
-| **Realization %** | 70.14% | Actual revenue vs. potential revenue |
-| **Total Bookings** | 14,594 | Across all platforms |
-| **Cancellation Rate** | 24.84% | Industry avg is ~20% — above benchmark |
-| **Avg Rating** | 3.62 / 5 | Guest satisfaction score |
+These are real hospitality industry KPIs — not generic metrics:
+
+| KPI | Full Name | Formula | Why It Matters |
+|---|---|---|---|
+| **RevPAR** | Revenue Per Available Room | Revenue ÷ Total Available Rooms | Core profitability measure — combines price AND occupancy |
+| **ADR** | Average Daily Rate | Revenue ÷ Rooms Sold | Pricing efficiency — ignores unsold rooms |
+| **DSRN** | Daily Sellable Room Nights | Total sellable rooms per day | Capacity baseline for all rate calculations |
+| **DURN** | Daily Utilized Room Nights | Rooms actually occupied per day | Actual demand signal |
+| **DBRN** | Daily Booked Room Nights | Total booked per day (incl. future) | Forward-looking demand |
+| **Realization %** | Revenue Realization | Actual Revenue ÷ Potential Revenue | Efficiency — accounts for discounts, cancellations |
+| **Occupancy %** | Occupancy Rate | DURN ÷ DSRN | Classic hotel utilization metric |
 
 ---
 
 ## 🔍 Key Findings
 
-### 1. Luxury Leads Revenue, Business Leads Volume
+### 1. Overall Portfolio Performance (May–Jul)
 
-| Category | Revenue |
-|---|---|
-| Luxury | ₹1,040M (61.5%) |
-| Business | ₹648M (38.5%) |
-
-Luxury properties generate significantly more revenue despite serving fewer guests — driven by higher ADR. However, Business properties offer more consistent occupancy.
-
----
-
-### 2. Property Performance (All Cities)
-
-| Property | City | Revenue | RevPAR | Occupancy | Realization | Avg Rating |
-|---|---|---|---|---|---|---|
-| Atliq Exotica | Mumbai | ₹117M | 503 | 57.87% | 70.39% | 4.32 ⭐ |
-| Atliq Grands | Delhi | ₹86M | 153 | 57.87% | 70.01% | 4.25 ⭐ |
-| Atliq City | Delhi | ₹54M | 233 | 57.87% | 71.20% | — |
-| Atliq Palace | Delhi | ₹88M | 378 | 57.87% | 70.62% | 4.29 ⭐ |
-| Atliq Seasons | Mumbai | ₹65M | 280 | 57.87% | 70.59% | 2.30 ⭐ |
-| Atliq Grands | Hyderabad | ₹46M | 196 | 57.87% | 69.73% | 3.06 ⭐ |
-
-> **Atliq Exotica Mumbai** is the top performer by revenue. **Atliq Seasons Mumbai** has the lowest guest rating (2.30) — an urgent quality signal.
-
----
-
-### 3. Revenue by City
-
-Mumbai leads all cities in revenue, followed by Bangalore, Hyderabad, and Delhi. Despite Delhi having the most properties, Mumbai's luxury tier drives higher yield per property.
-
----
-
-### 4. Booking Platform Mix
-
-| Platform | Bookings | Notes |
+| KPI | Value | Benchmark / Signal |
 |---|---|---|
-| LogTrip | Highest | Dominant OTA channel |
-| Direct Online | Second | Lower commission cost |
-| Others | Distributed | Makeyourtrip, Tripster, etc. |
+| **Total Revenue** | ₹1.69 Billion | Across all cities and room types |
+| **RevPAR** | ₹7,256 | Luxury benchmark: ₹10,000+ — room to improve |
+| **ADR** | ₹12,696 | Healthy for mid-luxury segment |
+| **Occupancy %** | 57.87% | Below luxury benchmark of 65–70% |
+| **Realization %** | 70.14% | ~30% revenue lost to cancellations/discounts |
+| **Cancellation Rate** | 24.84% | ⚠️ Industry avg ~20% — above benchmark |
+| **Avg Rating** | 3.62 / 5 | Below good-tier threshold of 4.0 |
+| **Total Bookings** | 14,594 | Across all platforms and properties |
 
-Direct bookings are the most profitable channel (no OTA commission). LogTrip drives volume but at a cost margin impact.
+---
+
+### 2. Luxury vs. Business Split
+
+| Category | Revenue | Share |
+|---|---|---|
+| Luxury | ₹1,040M | 61.5% |
+| Business | ₹648M | 38.5% |
+
+Luxury properties generate 60%+ of revenue at higher ADR — but occupancy is identical across both, suggesting **pricing power, not demand**, drives the gap.
+
+**Filtered Insight (Mumbai · Premium · July):** Luxury ₹38M vs. Business ₹19M — the split widens further when isolating premium room types in high-performing cities. ADR of ₹18,073 in this segment vs. ₹12,696 overall confirms premium rooms command a 42% price premium.
+
+---
+
+### 3. Property-Level Performance
+
+| Property | City | Revenue | RevPAR | ADR | Realization | Avg Rating |
+|---|---|---|---|---|---|---|
+| **Atliq Exotica** | Mumbai | ₹117M | 503 | 16,141 | 70.39% | 4.32 ⭐ |
+| Atliq Palace | Delhi | ₹88M | 378 | 12,480 | 70.62% | 4.29 ⭐ |
+| Atliq Grands | Delhi | ₹86M | 153 | 11,436 | 70.01% | 4.25 ⭐ |
+| Atliq Blu | Delhi | ₹57M | 245 | 13,115 | 69.85% | — |
+| Atliq City | Delhi | ₹54M | 233 | 17,593 | 71.20% | — |
+| **Atliq Seasons** | Mumbai | ₹65M | 280 | 18,210 | 70.55% | **2.38 ⭐** |
+| Atliq Grands | Hyderabad | ₹46M | 196 | 10,331 | 69.73% | 3.06 ⭐ |
+
+> **Top performer**: Atliq Exotica Mumbai — highest revenue AND rating.  
+> **Critical flag**: Atliq Seasons Mumbai — highest ADR (₹18,210) but rating of only 2.38. Guests are paying premium prices and leaving disappointed. This is a guest experience crisis.
+
+---
+
+### 4. Booking Platform Analysis
+
+| Platform | Share | Business Implication |
+|---|---|---|
+| LogTrip | Highest | Dominant OTA — drives volume but costs 15–20% commission |
+| MakeYourTrip | Second | Major Indian OTA — similar commission structure |
+| Direct Online | Third | **Highest margin** — no commission paid |
+| Tripster / Journey | Mid-tier | Niche platforms with lower volume |
+| Direct Offline | Lower | Walk-in / corporate contracts |
+
+**The problem:** OTAs dominate bookings but are the least profitable channel. Every ₹100 booked through LogTrip nets approximately ₹80–85 after commission vs. ₹100 direct.
 
 ---
 
 ### 5. Weekly Revenue Pattern
 
-Revenue follows a **cyclical weekly pattern** — peaks at weeks 24, 27, and 29, with visible troughs in between. This suggests weekend-driven demand (leisure travel) alternating with lower mid-week corporate travel periods.
+The revenue-by-week chart shows a **clear cyclical pattern** — peaks in weeks 24, 27, 29, and 31, with troughs between. This is consistent with **weekend leisure demand** alternating with slower mid-week periods.
+
+**Implication:** Mid-week corporate rate packages or event-tied promotions can smooth the dip weeks and improve overall RevPAR.
 
 ---
 
-### 6. Cancellation Rate — The Hidden Problem
+### 6. Revenue by City
 
-At **24.84%**, the cancellation rate exceeds the hospitality industry benchmark of ~20%. At ₹1.69B revenue, a 5% reduction in cancellations would recover approximately **₹84M in lost revenue**.
+| City | Revenue Rank | Notes |
+|---|---|---|
+| Mumbai | 1st 🏆 | Highest per-property yield; luxury segment dominates |
+| Bangalore | 2nd | Strong performance with fewer properties |
+| Hyderabad | 3rd | Growth market; currently underperforming vs. market size |
+| Delhi | 4th | Most properties, lowest revenue yield per property |
 
 ---
 
 ## 💡 Business Insights
 
-### Revenue Strategy
-- **Double down on Luxury in Mumbai** — highest RevPAR and revenue per property; prioritize investment here
-- **Address Delhi underperformance** — multiple properties but lower revenue yield vs. Mumbai; pricing or positioning issue
-- **Bangalore opportunity** — second-highest city revenue with fewer properties than Delhi; potential for expansion
+### Revenue & Pricing
+- **Raise ADR on Atliq Exotica Mumbai** — 4.32 rating + high demand = pricing power underutilized
+- **Dynamic pricing for peak weeks** (24, 27, 29, 31) — demand is predictable; rates should follow
+- **Atliq Seasons paradox**: highest ADR but lowest rating — investigate if guests feel the price isn't justified
 
-### Platform & Channel Mix
-- **Shift 5–10% of bookings from OTAs to direct** — each direct booking saves 15–20% in commission
-- **Invest in LogTrip partnership** — dominant source of volume; negotiate preferred listing or dynamic pricing integration
-- **Build direct loyalty program** — reduces OTA dependency and improves realization %
+### Cancellation Recovery
+- At 24.84% cancellation rate, **₹84M+ in potential revenue is being lost** assuming 5% is recoverable
+- **Implement non-refundable discount tiers** (e.g., 10% off for non-refundable bookings)
+- **Overbooking strategy** for high-demand weeks with full cancellation history data
 
-### Cancellation & Revenue Recovery
-- **Implement non-refundable rate options** — discounted rates with stricter cancellation terms reduce cancellation risk
-- **Atliq Seasons Mumbai (2.30 rating)** — investigate immediately; poor ratings drive higher cancellation rates and damage repeat bookings
-- **Dynamic pricing on high-demand weeks** — weeks 24, 27, 29 show natural demand spikes; these are yield management opportunities
+### Channel Mix Optimization
+- **Target: grow direct bookings from ~25% to 35%** — each 1% shift saves approximately ₹1.69M in commission
+- **LogTrip partnership terms** should be renegotiated — dominant platform position gives leverage
+- **Corporate tie-ups in Delhi** — city has most properties but lowest yield; B2B contracts with nearby businesses can stabilize mid-week occupancy
 
-### Occupancy Optimization
-- **57.87% occupancy is below the luxury benchmark of 65–70%** — targeted corporate tie-ups or event-based promotions can close this gap
-- **DSRN of 2,556** — with realization at 70.14%, approximately 750 room nights per day are going unrealized
+### Guest Experience
+- **Atliq Seasons Mumbai (2.38 rating) is a brand liability** — one bad-rated property can contaminate the entire chain's perception on OTA platforms
+- **Overall 3.62 rating is below the "recommended" threshold of 4.0** on most OTAs — impacts search ranking
 
 ---
 
@@ -168,15 +201,17 @@ At **24.84%**, the cancellation rate exceeds the hospitality industry benchmark 
 ```
 Hotels-Data-analysis-Powerbi-dashboard/
 │
-├── dashboard.pbix                  # Power BI source file (fully interactive)
-├── Hotels_Dashboard.png            # Dashboard screenshot
-├── filter.png                      # Filter panel screenshot
+├── data/
+│   ├── dim_date.csv                    # Calendar dimension
+│   ├── dim_hotels.csv                  # Property master data (city, category)
+│   ├── dim_rooms.csv                   # Room type dimension
+│   ├── fact_bookings.csv               # Individual booking transactions
+│   └── fact_aggregated_bookings.csv    # Pre-aggregated occupancy metrics
 │
-├── dim_date.csv                    # Calendar dimension
-├── dim_hotels.csv                  # Property master data
-├── dim_rooms.csv                   # Room type dimension
-├── fact_bookings.csv               # Individual booking transactions
-└── fact_aggregated_bookings.csv    # Aggregated booking metrics
+├── dashboard.pbix                      # Power BI source file (fully interactive)
+├── Hotels_Dashboard.png                # Full portfolio view screenshot
+├── filter.png                          # Filtered view: Mumbai · Premium · Jul 26
+└── README.md
 ```
 
 ---
@@ -188,21 +223,25 @@ Hotels-Data-analysis-Powerbi-dashboard/
 ```bash
 # Clone the repo
 git clone https://github.com/haseeb774/Hotels-Data-analysis-Powerbi-dashboard.git
+cd Hotels-Data-analysis-Powerbi-dashboard
 ```
 
 1. Open `dashboard.pbix` in Power BI Desktop
-2. All data is pre-loaded from the CSV files — no database connection needed
-3. Use the slicers (City, Room Type, Month, Week) to explore the dashboard interactively
+2. All data loads automatically from the `/data` folder — no database or API needed
+3. Use the slicers to filter by **City · Room Type · Month · Week Number**
+4. All KPIs (RevPAR, ADR, Occupancy, Realization) update in real time with every filter change
 
 ---
 
-## 🏨 About the Dataset
+## 🏨 Dataset
 
-This project uses a **hospitality domain dataset** modeled after real hotel chain operations. The data includes:
-- 14,594 booking records across May–July
-- 7 properties across 4 Indian cities
-- 4 room categories: Standard, Elite, Premium, Presidential
-- 6+ booking platforms including OTAs and direct channels
+Hospitality domain dataset modeled on real hotel chain operations:
+
+- **14,594** booking records across May–July
+- **7 properties** across 4 Indian cities (Delhi, Mumbai, Hyderabad, Bangalore)
+- **4 room categories**: Standard · Elite · Premium · Presidential
+- **2 hotel categories**: Luxury · Business
+- **6+ booking platforms**: LogTrip, MakeYourTrip, Direct Online, Tripster, Journey, Direct Offline
 
 ---
 
@@ -217,5 +256,5 @@ Data Analyst · Power BI · SQL · Python
 ---
 
 <div align="center">
-<i>If this project was useful to you, consider leaving a ⭐</i>
+<i>If this project was useful, consider leaving a ⭐</i>
 </div>
