@@ -13,6 +13,7 @@
 [📊 View Dashboard](#-dashboard) · [📐 Data Model](#-data-model) · [🔍 Key Findings](#-key-findings) · [💡 Business Insights](#-business-insights) · [⚙️ Setup](#️-setup)
 
 </div>
+*Part of a portfolio of business-impact data projects — see [my profile](https://github.com/haseeb774) for ML forecasting and customer intelligence systems.*
 
 ---
 
@@ -256,5 +257,5 @@ Data Analyst · Power BI · SQL · Python
 ---
 
 <div align="center">
-<i>If this project was useful, consider leaving a ⭐</i>
+<i>Need revenue or performance analysis for your own hotel/business? <a href="mailto:haseeb16001@gmail.com">Get in touch</a>.</i>
 </div>
